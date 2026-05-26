@@ -9,10 +9,8 @@ namespace AcadDxfExport
 {
     public class CommandEntry
     {
-        /// <summary>
-        /// Deklarace příkazu EXPORTFRAMES pro AutoCAD.
-        /// Příkaz otevře WPF okno exportéru rámečků.
-        /// </summary>
+        /// <summary> Deklarace příkazu EXPORTFRAMES pro AutoCAD.
+        /// Příkaz otevře WPF okno exportéru rámečků. </summary>
         [CommandMethod("EXPORTFRAMES")]
         public void ShowExportFramesWindow()
         {
