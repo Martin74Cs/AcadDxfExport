@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="AcadDxfExport.csproj" />
+  <Project Path="AcadDxfExport.csproj">
+    <BuildType Project="Release" />
+  </Project>
 </Solution>

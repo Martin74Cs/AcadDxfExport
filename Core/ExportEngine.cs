@@ -1,8 +1,9 @@
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AcadDxfExport.Core
 {
@@ -143,6 +144,19 @@ namespace AcadDxfExport.Core
                             // Hledání hodnot atributů pro sestavení názvu souboru
                             string val1 = FindAttributeValueForFrame(tr, modelSpace, blockRef, extents, tagAttributeName1);
                             string val2 = FindAttributeValueForFrame(tr, modelSpace, blockRef, extents, tagAttributeName2);
+
+                            //Uprava na 3 znaky pro druhou hodnotu, pokud je číslo
+                            if (int.TryParse(val2, out int cislo))
+                            {
+                                //Console.WriteLine(cislo.ToString("D3"));
+                                val2 = cislo.ToString("D3");
+                            }
+                            else
+                            {
+                                //Console.WriteLine("Neplatné číslo");
+                                // Pokud není číslo, ale chceme zachovat formát s třemi znaky, můžeme použít PadLeft
+                                val2 = val2.PadLeft(3, '0');
+                            }
 
                             string fileName = null;
                             if (!string.IsNullOrEmpty(val1) && !string.IsNullOrEmpty(val2))
