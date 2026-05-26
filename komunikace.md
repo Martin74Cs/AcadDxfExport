@@ -531,3 +531,6 @@ Máte tak kompletní historii a dokumentaci vývoje doplňku po ruce přímo u z
 Ješte ulož veškerou komunikaci.
 
 ---
+
+Pokus o zrušení synchonizace z gitem.
+Přidáno do gitignore: komunikace.md
