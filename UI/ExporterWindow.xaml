@@ -1,0 +1,269 @@
+<Window x:Class="AcadDxfExport.UI.ExporterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AutoCAD DXF Exportér Rámečků" 
+        Height="580" Width="500"
+        Background="#141419"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        BorderThickness="0"
+        AllowsTransparency="False"
+        FontFamily="Segoe UI"
+        Foreground="#F8F9FA">
+
+    <Window.Resources>
+        <!-- Styl pro moderní popisky (Labels) -->
+        <Style x:Key="ModernLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#ADB5BD"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <!-- Styl pro ComboBox a TextBox -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#1E1E24"/>
+            <Setter Property="Foreground" Value="#F8F9FA"/>
+            <Setter Property="BorderBrush" Value="#3F3F46"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="4">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4EA8DE"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#0077B6"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="1.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#E2E2E9"/>
+            <Setter Property="Foreground" Value="#141419"/>
+            <Setter Property="BorderBrush" Value="#4F4F5E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Background" Value="#1E1E24"/>
+                        <Setter Property="Foreground" Value="#F8F9FA"/>
+                        <Setter Property="Padding" Value="8,6"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#0077B6"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#0096C7"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Styl pro tlačítka s efekty při najetí myši -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#0077B6" Offset="0.0"/>
+                        <GradientStop Color="#0096C7" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#0096C7" Offset="0.0"/>
+                                            <GradientStop Color="#4EA8DE" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#03045E"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#3A3A42"/>
+                                <Setter Property="Foreground" Value="#707075"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#2A2A35"/>
+            <Setter Property="Foreground" Value="#E2E2E9"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#4F4F5E"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3F3F50"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#6F6F80"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1E1E24"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Styl pro CheckBox -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="#F8F9FA"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,6"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <!-- 0: Záhlaví -->
+            <RowDefinition Height="Auto"/>
+            <!-- 1: Formulář pro výběr bloků -->
+            <RowDefinition Height="Auto"/>
+            <!-- 2: Výběr složky -->
+            <RowDefinition Height="Auto"/>
+            <!-- 3: Volby exportu -->
+            <RowDefinition Height="Auto"/>
+            <!-- 4: Průběh a Log -->
+            <RowDefinition Height="*"/>
+            <!-- 5: Akční tlačítka -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 0: Záhlaví -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="EXPORTOVAT RÁMEČKY" FontSize="20" FontWeight="ExtraBold" Foreground="#4EA8DE"/>
+            <TextBlock Text="Hromadný export výkresů z modelového prostoru do DXF souborů." FontSize="11" Foreground="#868E96" Margin="0,2,0,0"/>
+            <Border Height="2" Background="#212529" Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <!-- 1: Výběr bloku a atributu -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Blok rámečku:" Style="{StaticResource ModernLabel}"/>
+                <ComboBox x:Name="CboBlockName" SelectionChanged="CboBlockName_SelectionChanged" IsEnabled="True"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Atribut 1 (Název):" Style="{StaticResource ModernLabel}"/>
+                <ComboBox x:Name="CboAttributeTag1" IsEnabled="False"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="4">
+                <TextBlock Text="Atribut 2 (Dodatek):" Style="{StaticResource ModernLabel}"/>
+                <ComboBox x:Name="CboAttributeTag2" IsEnabled="False"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 2: Výběr cílové složky -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,15">
+            <TextBlock Text="Cílová složka (DXF):" Style="{StaticResource ModernLabel}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="TxtOutputFolder" Grid.Column="0" IsReadOnly="False" Text="C:\Exports"/>
+                <Button Grid.Column="2" Content="Procházet..." Click="BtnBrowse_Click" Style="{StaticResource SecondaryButton}" Height="32"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- 3: Volby exportu -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,15">
+            <CheckBox x:Name="ChkTranslateToOrigin" IsChecked="True" Content="Automaticky posunout levý dolní roh rámečku na počátek (0,0,0)" Foreground="#ADB5BD" FontSize="11" IsEnabled="False"/>
+        </StackPanel>
+
+        <!-- 4: Průběh a Log -->
+        <Grid Grid.Row="4" Margin="0,0,0,15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Indikátor průběhu -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                <Grid>
+                    <TextBlock x:Name="LblProgress" Text="Připraven k exportu" FontSize="11" Foreground="#ADB5BD" FontWeight="Bold"/>
+                    <TextBlock x:Name="LblProgressPercent" Text="0 %" FontSize="11" Foreground="#4EA8DE" FontWeight="Bold" HorizontalAlignment="Right"/>
+                </Grid>
+                <ProgressBar x:Name="ProgressExport" Height="6" Background="#1E1E24" Foreground="#0077B6" BorderThickness="0" Margin="0,4,0,0" Minimum="0" Maximum="100" Value="0"/>
+            </StackPanel>
+
+            <!-- Log konzole -->
+            <Border Grid.Row="1" Background="#0C0C0E" BorderBrush="#25252D" BorderThickness="1" CornerRadius="4" Padding="8">
+                <ScrollViewer x:Name="LogScroll" VerticalScrollBarVisibility="Auto">
+                    <TextBox x:Name="TxtLog" Background="Transparent" Foreground="#D8F3DC" BorderThickness="0" TextWrapping="Wrap" IsReadOnly="True" AcceptsReturn="True" FontSize="11" FontFamily="Consolas" Height="124" />
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- 5: Akční tlačítka -->
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <!-- Pomocný odkaz nebo stav -->
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Pouze AutoCAD 2024" FontSize="10" Foreground="#495057" FontWeight="SemiBold"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Content="Exportovat" Click="BtnExport_Click" Style="{StaticResource PrimaryButton}" Margin="0,0,10,0" Width="110"/>
+                <Button Content="Zavřít" Click="BtnClose_Click" Style="{StaticResource SecondaryButton}" Width="90"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

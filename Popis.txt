@@ -1,0 +1,2 @@
+Generátor souboru DXF ze souboru DWG.
+Podle jednotlivých Bloku s přesunem do Point3D(0,0,0)
