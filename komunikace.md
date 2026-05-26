@@ -532,5 +532,7 @@ Ješte ulož veškerou komunikaci.
 
 ---
 
+### 👤 Uživatel (2026-05-26 13:12:16)
+
 Pokus o zrušení synchonizace z gitem.
 Přidáno do gitignore: komunikace.md
